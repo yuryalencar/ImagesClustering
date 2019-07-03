@@ -93,7 +93,7 @@ def getDissimilarityMatrix(allPpmImagesFeatures):
         dissimilarityMatrix.append(dissimilarityLine)
     return dissimilarityMatrix
 
-def getImagesForClustering(imageLimiter, rootPath):
+def getDissimilarityMatrixImagesForClustering(imageLimiter, rootPath):
     # ppmImage2 = imageReader.imread('Images/Images3/images(2).jpg')
     # ppmImage3 = imageReader.imread('Images/Images3/images(3)')
     # ppmImage4 = imageReader.imread('Images/Images2/images(3)')
