@@ -48,18 +48,18 @@ def getImagePercentageDensityUsingFilter(filter, ppmImage):
 
 
 def getDensityRedInImage(ppmImage):
-    return getDensityColorInImage(ppmImage, 0)
+    return getDensityColorInImage(ppmImage, 0, 1)
 
 
 def getDensityGreenInImage(ppmImage):
-    return getDensityColorInImage(ppmImage, 1)
+    return getDensityColorInImage(ppmImage, 1, 2)
 
 
 def getDensityBlueInImage(ppmImage):
-    return getDensityColorInImage(ppmImage, 2)
+    return getDensityColorInImage(ppmImage, 2, 1)
 
 
-def getDensityColorInImage(ppmImage, positionRgb):
+def getDensityColorInImage(ppmImage, positionRgb, weight):
     amountLines = len(ppmImage)
     amountColumns = len(ppmImage[0])
 
@@ -67,7 +67,7 @@ def getDensityColorInImage(ppmImage, positionRgb):
     for lineNumber in range(1, len(ppmImage) - 1):
         for columnNumber in range(1, len(ppmImage[lineNumber]) - 1):
             sumAmountColorInImage += ppmImage[lineNumber][columnNumber][positionRgb]
-    amountPixels = amountLines * amountColumns
+    amountPixels = amountLines * amountColumns * weight
     percentageColor = sumAmountColorInImage / amountPixels
     return percentageColor
 
