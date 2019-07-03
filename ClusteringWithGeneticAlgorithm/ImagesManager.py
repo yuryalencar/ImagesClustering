@@ -93,69 +93,31 @@ def getDissimilarityMatrix(allPpmImagesFeatures):
         dissimilarityMatrix.append(dissimilarityLine)
     return dissimilarityMatrix
 
+def getImagesForClustering(imageLimiter, rootPath):
+    # ppmImage2 = imageReader.imread('Images/Images3/images(2).jpg')
+    # ppmImage3 = imageReader.imread('Images/Images3/images(3)')
+    # ppmImage4 = imageReader.imread('Images/Images2/images(3)')
+    # ppmImage5 = imageReader.imread('Images/Images4/images(3)')
 
-# ppmImage2 = imageReader.imread('Images/Images3/images(2).jpg')
+    contImage = 0
+    allPpmImages = loadAllImagesInPpmByDirectory(rootPath)
+    allImagesFeatures = []
+    for ppmImage in allPpmImages:
+        imageFeature = []
+        if (contImage == imageLimiter):
+            break
+        imageFeature.append(getDensityRedInImage(ppmImage))
+        imageFeature.append(getDensityGreenInImage(ppmImage))
+        imageFeature.append(getDensityBlueInImage(ppmImage))
+        imageFeature.append(getImagePercentageDensityUsingVerticalFilter(ppmImage))
+        imageFeature.append(getImagePercentageDensityUsingHorizontalFilter(ppmImage))
+        allImagesFeatures.append(imageFeature)
+        contImage = contImage + 1
+    return getDissimilarityMatrix(allImagesFeatures)
 
-contImage = 0
-imageLimiter = 15
-
-allPpmImages = loadAllImagesInPpmByDirectory('Images')
-allImagesFeatures = []
-toCalculateVariance = []
-for ppmImage in allPpmImages:
-    if (contImage == imageLimiter):
-        break
-    imageFeature = []
-    imageFeature.append(getDensityRedInImage(ppmImage))
-    imageFeature.append(getDensityGreenInImage(ppmImage))
-    imageFeature.append(getDensityBlueInImage(ppmImage))
-    imageFeature.append(getImagePercentageDensityUsingVerticalFilter(ppmImage))
-    imageFeature.append(getImagePercentageDensityUsingHorizontalFilter(ppmImage))
-    allImagesFeatures.append(imageFeature)
-    contImage = contImage + 1
-
-print(np.matrix(getDissimilarityMatrix(allImagesFeatures)))
-
-# print(np.var(toCalculateVariance))
-# print(np.std(toCalculateVariance))
-# print(allImagesFeatures)
-
+print(np.matrix(getImagesForClustering(3, 'Images')))
 # print('Percentage Using Vertical Filter: ', getImagePercentageDensityUsingVerticalFilter(ppmImage))
 # print('Percentage Using Horizontal Filter: ', getImagePercentageDensityUsingHorizontalFilter(ppmImage))
 # print('Red density: ', getDensityRedInImage(ppmImage))
 # print('Green density: ', getDensityGreenInImage(ppmImage))
 # print('Blue density: ', getDensityBlueInImage(ppmImage))
-
-
-# -----------------------------------------------------------------
-# OLD ALGORITHM
-# res = imageReader.imread('Images/Images3/images(2).jpg')
-# pv = [[1, 0, -1], [1, 0, -1], [1, 0, -1]]
-# # pv = [[1, 1, 1], [0, 0, 0], [-1, -1, -1]]  # ph
-#
-# y = len(res)
-# x = len(res[0])
-#
-# # print(x)
-# # print(y)
-#
-# mp = [[[0]] * x] * y
-#
-# sum = 0
-# with open('out.txt', 'w') as f:
-#     for i in range(1, len(res) - 1):
-#         for j in range(1, len(res[i]) - 1):
-#             acc = 0
-#             for k in range(-1, 2):
-#                 for o in range(-1, 2):
-#                     acc += int(pv[k + 1][o + 1] * res[i + k][j + o][0])
-#                     # print(acc)
-#
-#             mp[i][j] = abs(acc)
-#             sum += abs(acc)
-#
-#             print(mp[i][j], file=f)
-#
-# r = ((y - 1) * (x - 1))
-# result = sum / r
-# print(result)
