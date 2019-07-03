@@ -1,6 +1,8 @@
 import os as operationSystem
 from builtins import print
 import cv2 as imageReader
+import numpy as np
+
 
 def loadAllImagesInPpmByDirectory(imagesRootPath):
     foldersImages = operationSystem.listdir(imagesRootPath)
@@ -44,14 +46,18 @@ def getImagePercentageDensityUsingFilter(filter, ppmImage):
     percentageDensity = sumToFilterResult / amountPixels
     return percentageDensity
 
+
 def getDensityRedInImage(ppmImage):
     return getDensityColorInImage(ppmImage, 0)
+
 
 def getDensityGreenInImage(ppmImage):
     return getDensityColorInImage(ppmImage, 1)
 
+
 def getDensityBlueInImage(ppmImage):
     return getDensityColorInImage(ppmImage, 2)
+
 
 def getDensityColorInImage(ppmImage, positionRgb):
     amountLines = len(ppmImage)
@@ -65,9 +71,63 @@ def getDensityColorInImage(ppmImage, positionRgb):
     percentageColor = sumAmountColorInImage / amountPixels
     return percentageColor
 
-# allPpmImages = loadAllImagesInPpmByDirectory('Images')
-# print(len(allPpmImages))
 
+def getAllFeaturesMean(features):
+    sumFeatures = 0
+    for feature in features:
+        sumFeatures += feature
+    return sumFeatures / len(features)
+
+
+def getDissimilarityMatrix(allPpmImagesFeatures):
+    dissimilarityMatrix = []
+    for lineIndex in range(0, len(allPpmImagesFeatures)):
+        dissimilarityLine = []
+        for columnIndex in range(0, len(allPpmImagesFeatures)):
+            differenceVector = []
+            imageMean = getAllFeaturesMean(allPpmImagesFeatures[lineIndex])
+            differenceVector.append(imageMean)
+            imageMeanToCompare = getAllFeaturesMean(allPpmImagesFeatures[columnIndex])
+            differenceVector.append(imageMeanToCompare)
+            dissimilarityLine.append(np.std(differenceVector))
+        dissimilarityMatrix.append(dissimilarityLine)
+    return dissimilarityMatrix
+
+
+# ppmImage2 = imageReader.imread('Images/Images3/images(2).jpg')
+
+contImage = 0
+imageLimiter = 15
+
+allPpmImages = loadAllImagesInPpmByDirectory('Images')
+allImagesFeatures = []
+toCalculateVariance = []
+for ppmImage in allPpmImages:
+    if (contImage == imageLimiter):
+        break
+    imageFeature = []
+    imageFeature.append(getDensityRedInImage(ppmImage))
+    imageFeature.append(getDensityGreenInImage(ppmImage))
+    imageFeature.append(getDensityBlueInImage(ppmImage))
+    imageFeature.append(getImagePercentageDensityUsingVerticalFilter(ppmImage))
+    imageFeature.append(getImagePercentageDensityUsingHorizontalFilter(ppmImage))
+    allImagesFeatures.append(imageFeature)
+    contImage = contImage + 1
+
+print(np.matrix(getDissimilarityMatrix(allImagesFeatures)))
+
+# print(np.var(toCalculateVariance))
+# print(np.std(toCalculateVariance))
+# print(allImagesFeatures)
+
+# print('Percentage Using Vertical Filter: ', getImagePercentageDensityUsingVerticalFilter(ppmImage))
+# print('Percentage Using Horizontal Filter: ', getImagePercentageDensityUsingHorizontalFilter(ppmImage))
+# print('Red density: ', getDensityRedInImage(ppmImage))
+# print('Green density: ', getDensityGreenInImage(ppmImage))
+# print('Blue density: ', getDensityBlueInImage(ppmImage))
+
+
+# -----------------------------------------------------------------
 # OLD ALGORITHM
 # res = imageReader.imread('Images/Images3/images(2).jpg')
 # pv = [[1, 0, -1], [1, 0, -1], [1, 0, -1]]
@@ -99,12 +159,3 @@ def getDensityColorInImage(ppmImage, positionRgb):
 # r = ((y - 1) * (x - 1))
 # result = sum / r
 # print(result)
-
-# allPpmImages = loadAllImagesInPpmByDirectory('Images')
-ppmImage = imageReader.imread('Images/Images3/images(2).jpg')
-print('Percentage Using Vertical Filter: ', getImagePercentageDensityUsingVerticalFilter(ppmImage))
-print('Percentage Using Horizontal Filter: ', getImagePercentageDensityUsingHorizontalFilter(ppmImage))
-print('Red density: ', getDensityRedInImage(ppmImage))
-print('Green density: ', getDensityGreenInImage(ppmImage))
-print('Blue density: ', getDensityBlueInImage(ppmImage))
-
