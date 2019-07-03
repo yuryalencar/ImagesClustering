@@ -115,7 +115,6 @@ def getDissimilarityMatrixImagesForClustering(imageLimiter, rootPath):
         contImage = contImage + 1
     return getDissimilarityMatrix(allImagesFeatures)
 
-print(np.matrix(getImagesForClustering(3, 'Images')))
 # print('Percentage Using Vertical Filter: ', getImagePercentageDensityUsingVerticalFilter(ppmImage))
 # print('Percentage Using Horizontal Filter: ', getImagePercentageDensityUsingHorizontalFilter(ppmImage))
 # print('Red density: ', getDensityRedInImage(ppmImage))
